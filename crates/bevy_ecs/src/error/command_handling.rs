@@ -94,8 +94,14 @@ where
     ) -> impl Command<Result<(), EntityMutableFetchError>>
            + HandleError<Result<(), EntityMutableFetchError>> {
         move |world: &mut World| -> Result<(), EntityMutableFetchError> {
-            let entity = world.get_entity_mut(entity)?;
-            self.apply(entity);
+            match world.get_entity_mut(entity){
+                Ok(entity) => {
+                    self.apply(entity);
+                },
+                Err(entity_error) => {
+                    warn!("{}", entity_error);
+                }
+            }
             Ok(())
         }
     }
